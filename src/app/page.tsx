@@ -1,101 +1,107 @@
-import Image from "next/image";
+'use client';
+import React, { useState, useEffect } from 'react';
 
-export default function Home() {
+const colors = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink'];
+const colorNames = ['Red', 'Blue', 'Green', 'Yellow', 'Orange', 'Purple', 'Pink'];
+
+export default function StroopTest() {
+  const [currentColor, setCurrentColor] = useState('');
+  const [currentWord, setCurrentWord] = useState('');
+  const [score, setScore] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(60);
+  const [gameOver, setGameOver] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
+
+  useEffect(() => {
+    if (gameStarted && timeLeft > 0) {
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
+    } else if (timeLeft === 0) {
+      setGameOver(true);
+    }
+  }, [timeLeft, gameStarted]);
+
+  const startGame = () => {
+    setGameStarted(true);
+    setScore(0);
+    setTimeLeft(30);
+    setGameOver(false);
+    newWord();
+  };
+
+  const newWord = () => {
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    const randomWord = colorNames[Math.floor(Math.random() * colorNames.length)];
+    setCurrentColor(randomColor);
+    setCurrentWord(randomWord);
+  };
+
+  const handleGuess = (color: any) => {
+    if (color === currentColor) {
+      setScore(score + 1);
+    }
+    newWord();
+  };
+
+  const getButtonColor = (color: any) => {
+    switch (color) {
+      case 'red': return 'bg-red-500 hover:bg-red-700';
+      case 'blue': return 'bg-blue-500 hover:bg-blue-700';
+      case 'green': return 'bg-green-500 hover:bg-green-700';
+      case 'yellow': return 'bg-yellow-500 hover:bg-yellow-700';
+      case 'orange': return 'bg-orange-500 hover:bg-orange-700';
+      case 'purple': return 'bg-purple-500 hover:bg-purple-700';
+      case 'pink': return 'bg-pink-500 hover:bg-pink-700';
+      default: return 'bg-gray-500 hover:bg-gray-700';
+    }
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+      <h1 className="text-3xl font-bold mb-4">Stroop Test Game</h1>
+      {!gameStarted ? (
+        <button
+          onClick={startGame}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Start Game
+        </button>
+      ) : (
+        <>
+          <div className="mb-4">Time left: {timeLeft}s | Score: {score}</div>
+          <div
+            className="text-4xl font-bold mb-4"
+            style={{ color: currentColor }}
           >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            {currentWord}
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {colors.map((color) => (
+              <button
+                key={color}
+                onClick={() => handleGuess(color)}
+                className={`${getButtonColor(color)} text-white font-bold py-2 px-4 rounded`}
+              >
+                {color}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+      {gameOver && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg">
+            <h2 className="text-2xl font-bold mb-4">Game Over!</h2>
+            <p className="mb-4">Your final score is {score}.</p>
+            <button
+              onClick={startGame}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Play Again
+            </button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      )}
     </div>
   );
 }
