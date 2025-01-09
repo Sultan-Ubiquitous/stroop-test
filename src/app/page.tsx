@@ -24,7 +24,7 @@ export default function StroopTest() {
   const startGame = () => {
     setGameStarted(true);
     setScore(0);
-    setTimeLeft(30);
+    setTimeLeft(60);
     setGameOver(false);
     newWord();
   };
