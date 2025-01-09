@@ -60,12 +60,29 @@ export default function StroopTest() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
       <h1 className="text-3xl font-bold mb-4">Stroop Test Game</h1>
       {!gameStarted ? (
+        <div className='flex justify-center items-center flex-col'>
         <button
           onClick={startGame}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-fit"
         >
           Start Game
         </button>
+        <div className=' py-5'>
+          <h1 className='font-bold'>1. Objective: </h1>
+          <h3>Your goal is to quickly identify the color of the word being displayed. Ignore the word itself, as it may conflict with the color.
+          </h3>
+          <h1 className='font-bold'>2. How to play: </h1>
+          <h3>You will see word related to a color on the screen, your goal is to choose color of the word.
+          </h3>
+          <h3>Once you have choosen the color of the word, press the given below button for the choosen color.</h3>
+          <h1 className='font-bold'>2. Scoring: </h1>
+          <h3>Each correct answer earns you 1 point.</h3>
+          <h3>Try to score as many points as you can in the duration of 60 seconds.</h3>
+          <h1 className='font-bold'>4. Controls: </h1>
+          <h3>Use your mouse to click the buttons</h3>
+          <h3>Do not refresh the page, as it will restart the game.</h3>
+        </div>
+        </div>
       ) : (
         <>
           <div className="mb-4">Time left: {timeLeft}s | Score: {score}</div>
